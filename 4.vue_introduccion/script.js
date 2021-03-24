@@ -2,7 +2,9 @@ const app = Vue.createApp({
     data() {
         return {
             titulo: 'QUE HERMOSO ES VUE...!!!WOWW',
-            cantidad: 20
+            cantidad: 20,
+            enlace: 'http://www.google.com',
+            estado: false
         }
     }
 })
@@ -12,4 +14,4 @@ const app = Vue.createApp({
 //     data: {
 //       message: 'Hello Vue!'
 //     }
-//   })
+// })
