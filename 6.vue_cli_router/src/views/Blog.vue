@@ -1,10 +1,14 @@
 <template>
-  <titulo texto="Titulo de mi Blog" />
-  <button @click="consumirApi">Consumir API</button>
+    <div>
+        <titulo texto="Titulo de mi Blog" />
+        <button @click="consumirApi">Consumir API</button>
 
-   <div v-for="item in arrayBlog" :key="item.id">
-        {{ item.id }}- {{ item.title }}
-   </div>
+        <div v-for="item in arrayBlog" :key="item.id">
+            <router-link :to="`/blog/${item.id}`" >  <!-- esta ruta la hems onfigurado en index.js, donde estan todas las rutas -->
+                {{ item.id }} - {{ item.title }}
+            </router-link>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -32,9 +36,9 @@ export default {
             }
         }
     },
-    // created() { /* primero carga todo lo que hay en el script y luego ejecuta el template, lo ejecuta de manera automatica */
-    //     this.consumirApi()
-    // },
+    created() { /* primero carga todo lo que hay en el script y luego ejecuta el template, lo ejecuta de manera automatica */
+        this.consumirApi()
+    },
 }
 </script>
 
