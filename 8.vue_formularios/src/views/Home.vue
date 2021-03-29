@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <form>
-      <input type="text" class="form-control my-2" placeholder="Ingrese Nombre" v-model="tarea.nombre">
+    <form @submit.prevent="procesarFormulario">
+      <input type="text" class="form-control my-2" placeholder="Ingrese Nombre" v-model.trim="tarea.nombre">
 
       <div class="form-check form-check-inline">
         <input type="checkbox" id="check-1" class="form-check-input" v-model="tarea.categorias" value="Javascript">
@@ -28,6 +28,10 @@
       <div class="mt-2">
         <input type="number" class="form-control" v-model.number="tarea.numero">
       </div>
+
+      <button :disabled="bloquear" class="btn btn-dark mt-2 btn-block"  type="submit">
+        Procesar
+      </button>
     </form>
     <hr>
     <p>{{tarea}}</p>
@@ -56,6 +60,24 @@ export default {
   methods: {
     procesarFormulario() {
       console.log(this.tarea)
+
+      if(this.tarea.nombre.trim() === ""){
+        console.log('Campo vacio')
+        return
+      }
+      console.log('No esta vacio')
+      // enviamos los datos
+      this.tarea = {
+        nombre: '',
+        categorias: [],
+        estado: '',
+        numero: 0
+      }
+    }
+  },
+  computed: {
+    bloquear() {
+      return this.tarea.nombre.trim() === "" ? true : false
     }
   },
 }
