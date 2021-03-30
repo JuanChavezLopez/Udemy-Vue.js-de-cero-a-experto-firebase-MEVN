@@ -48,7 +48,7 @@
           value="relax"
           v-model="propsTarea.estado"
         />
-        <label class="form-check-label" for="radio-2">Relay</label>
+        <label class="form-check-label" for="radio-2">Relax</label>
       </div>
     </div>
     <hr />
@@ -74,7 +74,7 @@
         },
         computed: {
             bloquear() {
-                return this.propsTarea.nombre.trim() === " " ? true : false
+                return this.propsTarea.nombre.trim() === "" ? true : false
             }
         },
     };

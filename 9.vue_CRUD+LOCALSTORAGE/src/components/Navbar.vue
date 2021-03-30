@@ -1,10 +1,10 @@
 <template>
-  <div class="navbar navbar-dark bg-dark">
+  <div class="navbar navbar-dark bg-success">
       <router-link to="/" class="navbar-brand">
-        Formularios
+        VUE - CRUD + LOCALSTORAGE
       </router-link>
       <div class="d-flex">
-          <router-link class="btn btn-success" to="/">
+          <router-link class="btn btn-dark" to="/">
           Tareas
           </router-link>
       </div>

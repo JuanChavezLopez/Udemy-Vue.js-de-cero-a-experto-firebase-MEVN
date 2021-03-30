@@ -19,10 +19,12 @@ export default {
         ...mapState(['tarea'])
     },
     methods: {
-        ...mapActions(['setTarea', 'updateTarea'])
+        ...mapActions(['getTareas', 'updateTarea'])
     },
     created() {
-        this.setTarea(this.$route.params.id)
+        // esto se genera de manera automatica cuando carga toda la pagina
+        // estamos haciendo la solicitud de la tarea, en este momento le enviamos el id, si lo encuentra por reactividad se actualiza la tarea, la cual vamos a imprimir en el formulario
+        this.getTareas(this.$route.params.id)
     }
 
 }
