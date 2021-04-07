@@ -73,7 +73,7 @@ export default createStore({
           // !lo que tenemos de respuesta del servidor FIREBASE
           const userDB = await res.json();
 
-          console.log('userDB:',userDB)
+          // console.log('userDB:',userDB)
 
           if(userDB.error) {
             return console.log(userDB.error)
