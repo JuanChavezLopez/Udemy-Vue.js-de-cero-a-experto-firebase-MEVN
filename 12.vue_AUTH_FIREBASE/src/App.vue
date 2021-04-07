@@ -15,10 +15,8 @@ export default {
   },
   methods: {
     ...mapActions(['cargarLocalStorage'])
-  },
-  created() { /* cuando nuestra aplicacion arranque cargamos, la informacion del localStorage, de manera automatica */
-    this.cargarLocalStorage()
   }
+
 }
 </script>
 

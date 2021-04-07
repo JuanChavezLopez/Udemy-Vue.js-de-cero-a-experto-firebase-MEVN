@@ -36,7 +36,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setTarea']),
+    ...mapActions(['setTarea', 'cargarLocalStorage']),
 
     procesarFormulario() {
       // imprimimos los datos llenados del formulario
@@ -65,6 +65,9 @@ export default {
         numero: 0
       }
     }
+  },
+  created() { /* cuando nuestra aplicacion arranque cargamos, la informacion del localStorage, de manera automatica */
+    this.cargarLocalStorage()
   }
 
 }

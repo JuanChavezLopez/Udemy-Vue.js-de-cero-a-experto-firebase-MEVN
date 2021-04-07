@@ -53,6 +53,11 @@ export default createStore({
     },
   },
   actions: {
+      cerrarSesion({ commit }){
+        commit('setUser', null)
+        router.push('/ingreso')
+        localStorage.removeItem('usuario')
+      },
       async ingresoUsuario({commit}, usuario){
         try {
           const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDfxSyDd4pSy98mIXE5w4P8CC5FsC8WK8c', {
@@ -60,17 +65,25 @@ export default createStore({
             body: JSON.stringify({
               email: usuario.email,
               password: usuario.password,
-              returnSecureToken: true
+              returnSecureToken: true 
+              // !si no habilitamos el returnSecureToken, no nos devolvera del servidor el refreshToken
             })
           })
 
-          const userDB = await res.json()
-          console.log('userDB',userDB)
+          // !lo que tenemos de respuesta del servidor FIREBASE
+          const userDB = await res.json();
+
+          console.log('userDB:',userDB)
 
           if(userDB.error) {
             return console.log(userDB.error)
           }
           commit('setUser', userDB);
+          router.push('/') //!lo redirigimos a una pagina en particular
+
+          // !LO MANDAMOS A EL LOCALSTORAGE
+          localStorage.setItem('usuario', JSON.stringify(userDB))
+
         } catch (error) {
           console.log(error)
         }
@@ -94,18 +107,30 @@ export default createStore({
             return
           }
           commit('setUser', userDB);
+          // !LO MANDAMOS A EL LOCALSTORAGE en formato JSON
+          localStorage.setItem('usuario', JSON.stringify(userDB))
+
           // ! EL ERROR DEL CATCH ES CUANDO HACEMOS UNA SOLICITUD INVALIDA
         } catch (error) { 
           console.log(error)
         }
       },
     // !----- FIREBASE CARGAR DATOS EN DOCUMENTO-----
-      async cargarLocalStorage({ commit }) {
+      async cargarLocalStorage({ commit, state }) {
+        // !hacemos la solicitud a la base de datos si el usuario existe
+        if( localStorage.getItem('usuario')) {
+          // !lo transformamos a un objeto
+          commit('setUser', JSON.parse(localStorage.getItem('usuario')))
+        }else {
+          return commit('setUser', null)
+        }
+
+
         try {
-          const res = await fetch ('https://maktub-91e2c-default-rtdb.firebaseio.com/tareas.json');
+          const res = await fetch (`https://maktub-91e2c-default-rtdb.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`);
           const dataDB = await res.json()
           console.log(dataDB)
-          // ----------------------------
+          // -------------------------------------------------------------------------------
 
           const arrayTareas = []
 
@@ -123,9 +148,9 @@ export default createStore({
         }
       },
       // !----------------   GUARDAR DATOS EN FIREBASE    -------------
-      async setTarea({commit}, tarea) {
+      async setTarea({commit, state}, tarea) {
         try {
-          const res = await fetch(`https://maktub-91e2c-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`,{
+          const res = await fetch(`https://maktub-91e2c-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`,{
             method: 'PUT',
             headers: {
               'Content-Type' : 'application/json'
@@ -145,9 +170,9 @@ export default createStore({
         commit ('getTareas', id)
       },
       // !----------------   ACTUALIZAR DATOS EN FIREBASE    -------------
-      async updateTarea({commit}, tarea) {
+      async updateTarea({commit, state}, tarea) {
         try {
-          const res = fetch(`https://maktub-91e2c-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`, {
+          const res = fetch(`https://maktub-91e2c-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
             method: 'PATCH',
             body: JSON.stringify(tarea)
           })
@@ -160,9 +185,9 @@ export default createStore({
         }
       },
       // !----------------   ELIMINAR DATOS EN FIREBASE    -------------
-      async deleteTareas({commit}, id){
+      async deleteTareas({commit, state}, id){
         try {
-            await fetch (`https://maktub-91e2c-default-rtdb.firebaseio.com/tareas/${id}.json`, {
+            await fetch (`https://maktub-91e2c-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${id}.json?auth=${state.user.idToken}`, {
               method: 'DELETE'
             })
             commit('eliminar', id)
@@ -172,6 +197,11 @@ export default createStore({
          }
       },
     },
-  modules: {
+  getters: {
+    usuarioAutenticado(state) {
+      return !!state.user
+    }
+  },
+  modules:{
   }
 })
